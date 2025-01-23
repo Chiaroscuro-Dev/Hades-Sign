@@ -1,1 +1,29 @@
+# fastlane/Fastfile
+default_platform(:ios)
 
+platform :ios do
+  desc "Sign an IPA file with a dynamic app identifier, .p12 certificate, and provisioning profile"
+  lane :sign_ipa do |options|
+    ipa_path = options[:ipa_path]                # Path to the IPA file (provided by user)
+    p12_path = options[:p12_path]                # Path to the p12 certificate (provided by user)
+    profile_path = options[:profile_path]        # Path to the provisioning profile (provided by user)
+    p12_password = options[:p12_password]        # Password for the p12 certificate (provided by user)
+    app_identifier = options[:app_identifier]    # Dynamic app identifier (retrieved from the IPA or user input)
+
+    UI.message("Signing the IPA with app identifier: #{app_identifier}")
+
+    # Import the p12 certificate
+    import_certificate(
+      certificate_path: p12_path,
+      certificate_password: p12_password
+    )
+
+    # Use Fastlane's resign action to sign the IPA dynamically
+    resign(
+      ipa: ipa_path,
+      signing_identity: "iPhone Distribution",   # Adjust this as necessary
+      provisioning_profile: profile_path,
+      app_identifier: app_identifier             # Dynamically pass the app identifier
+    )
+  end
+end
