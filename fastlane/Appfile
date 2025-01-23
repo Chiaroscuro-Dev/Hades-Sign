@@ -1,1 +1,2 @@
-
+# fastlane/Appfile
+apple_id("your_apple_id@example.com") # Optional, if the Apple ID stays constant
